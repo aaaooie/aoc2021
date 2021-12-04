@@ -1,24 +1,24 @@
 .decl depth(n:number, x:number) 
 .input depth
 
-/*
+///*
 
 // part1
 
-.decl steps(i:number,a:number, b:number)
-steps(i,a,b):-depth(i,a),depth(i+1,b),i>=0.
+.decl steps(i:number, a:number, b:number)
+steps(i,a,b) :- depth(i,a), depth(i+1,b), i>=0.
 
-.decl inc_steps(i:number,x:number, y:number)
-inc_steps(i,x,y):-steps(i,x,y),x<y.
+.decl inc_steps(i:number, x:number, y:number)
+inc_steps(i,x,y) :- steps(i,x,y), x<y.
 
 .printsize inc_steps
 
-*/
+//*/
 
-.decl measurments(i:number,x:number)
-measurments(i,x):-depth(i,a),depth(i-1,b),depth(i-2,c),x=a+b+c.
+.decl measurments(i:number, x:number)
+measurments(i,x) :- depth(i,a), depth(i-1,b), depth(i-2,c), x=a+b+c.
 
 .decl inc_measure(i:number,x:number,y:number)
-inc_measure(i,x,y):-measurments(i,x),measurments(i+1,y),x<y.
+inc_measure(i,x,y) :- measurments(i,x), measurments(i+1,y), x<y.
 
 .printsize inc_measure
