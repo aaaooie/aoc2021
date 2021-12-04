@@ -1,0 +1,58 @@
+#include "lines.dl"
+
+.decl len(r:number)
+len(r):-r=max i:{lines(i,_)}.
+
+
+.decl mask(i:number,j:number,r:number)
+mask(a,b,m):-lines(a,v),
+  b=range(0,16), 
+  m=v band 2^b.
+
+.decl _bit(data:number,position:number,value:number)
+_bit(a,b,k):-mask(a,b,0),k=0.
+_bit(a,b,k):-mask(a,b,t),t>0,k=1.
+
+.decl bitsums(position:number,result:number)
+///* shut up and copy-paste from mk_dl.js
+bitsums(0,S):-S=count:{_bit(_,0,1)}.
+bitsums(1,S):-S=count:{_bit(_,1,1)}.
+bitsums(2,S):-S=count:{_bit(_,2,1)}.
+bitsums(3,S):-S=count:{_bit(_,3,1)}.
+bitsums(4,S):-S=count:{_bit(_,4,1)}.
+/*
+bitsums(5,S):-S=count:{_bit(_,5,1)}.
+bitsums(6,S):-S=count:{_bit(_,6,1)}.
+bitsums(7,S):-S=count:{_bit(_,7,1)}.
+bitsums(8,S):-S=count:{_bit(_,8,1)}.
+bitsums(9,S):-S=count:{_bit(_,9,1)}.
+bitsums(10,S):-S=count:{_bit(_,10,1)}.
+bitsums(11,S):-S=count:{_bit(_,11,1)}.
+//*/
+
+.decl most_common(position:number,bit:number)
+most_common(p,1) :- bitsums(p,r), len(L), r >= L/2.
+most_common(p,0) :- bitsums(p,r), len(L), r < L/2.
+
+.decl least_common(position:number,bit:number)
+least_common(p,0) :- bitsums(p,r), len(L), r >= L/2.
+least_common(p,1) :- bitsums(p,r), len(L), r < L/2.
+
+.decl _most_common(n:number, position: number, result:number)
+_most_common()
+
+.decl oxygen(pos:number,result:number)
+oxygen(4,R):-lines(i,v),most_common(4,t),_bit(i,4,t),
+	R=v.
+oxygen(k,R):-lines(i,v),oxygen(k+1,v),_most_common(v,k,t),_bit(i,k,t),
+	R=v.
+
+.decl test(i:number,b:number)
+test(4,0b11110).test(4,0b10110).test(4,0b10111).test(4,0b10101).test(4,0b11100).test(4,0b10000).test(4,0b11001).
+test(3,0b10110).test(3,0b10111).test(3,0b10101).test(3,0b10000).
+
+.printsize lines
+.printsize oxygen
+
+.output oxygen, test
+

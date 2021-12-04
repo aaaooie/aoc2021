@@ -1,0 +1,13 @@
+.decl lines(i:number,a:number)
+lines(0,0b00100).
+lines(1,0b11110).
+lines(2,0b10110).
+lines(3,0b10111).
+lines(4,0b10101).
+lines(5,0b01111).
+lines(6,0b00111).
+lines(7,0b11100).
+lines(8,0b10000).
+lines(9,0b11001).
+lines(10,0b00010).
+lines(11,0b01010).

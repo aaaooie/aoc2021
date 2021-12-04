@@ -1,0 +1,94 @@
+.decl announcement(
+	i:number,
+	shoutout:number)
+
+.decl tables(
+	table_count:number,
+	row:number,
+	column:number,
+	written:number)
+
+.input announcement, tables
+.printsize announcement, tables
+
+.decl marked (i:number, t:number, r:number, c:number) // число отмечено в таблице, если...
+marked(i,t,r,c):- announcement(i,N), tables(t,r,c,N). // объявлено в этот ход
+marked(i,t,r,c):- marked(i-1,t,r,c),announcement(i,_). // ИЛИ было объявлено в какой-то из предыдущих ходов
+
+//.decl sample_turn( t:number, r:number, c:number )
+//first_turn(t,r,c):-marked(8,t,r,c).
+
+// зачёркиваем ряд, если...
+.decl condition_row(turn:number,table:number,row:number) 
+condition_row(i,t,r):- // для каждой колонки в нём числа отмечены
+	marked(i,t,r,0),
+	marked(i,t,r,1),
+	marked(i,t,r,2),
+	marked(i,t,r,3),
+	marked(i,t,r,4). 
+
+// зачёркиваем колонку, если...
+.decl condition_col(turn:number,table:number,col:number) 
+condition_col(i,t,c):- // для каждго ряда в ней числа отмечены
+	marked(i,t,0,c),
+	marked(i,t,1,c),
+	marked(i,t,2,c),
+	marked(i,t,3,c),
+	marked(i,t,4,c). 
+
+// информация о том на каком ходу какой стол выигрывает
+.decl win(turn:number, table:number)
+win(i,t) :-  condition_row(i,t,_).
+win(i,t) :-  condition_col(i,t,_).
+
+// на каком ходу какой стол впервые выигрывает
+.decl win_first(turn:number, table:number)
+win_first(i,t):-win(i,t),!win(i-1,t).
+
+//.output win_first
+
+// Это как бы reduce
+// Мы ожидаем, что `min` сожмёт все ходы, на которых происходит выигрыш до одного — минимального.
+// При этом может одновременно выиграть несколько столов
+.decl win_turn( turn:number, table:number, shout: number) 
+//win_turn(i,t,v):- i = min z : win(z,t),announcement(i,v).  // PART 1
+win_turn(i,t,v):- i = max z : win_first(z,t),announcement(i,v).
+
+
+.output win_turn
+
+///*
+/// А ТЕПЕРЬ самостоятельно решим простое упражнение: сумма всех чисел в табличке
+// которые к некоторому ходу
+// не были зачёркнуты 
+
+// для начала неявно положимся на инвариант, что все числа в таблице не повторяются
+// (иначе было бе неудобно играть в бинго)
+.decl in_table(table:number,written:number) // число, написанное на бумаге
+in_table(t,w):-tables(t,_,_,w).
+
+// указанное число в указанной таблице на указанном ходу не зачёркнуто
+// Eсли оно не было зачёркнуто раньше
+// Если Его не зачеркнули на этом ходу
+.decl clear(written:number, table:number, turn:number)  
+clear(w,t,-1) :- in_table(t,w). // -1 - база индукции. don't ask.
+clear(w,t,i+1) :- clear(w,t,i),!announcement(i+1,w). // announcement(j,w) => not clear (w,_,j)
+
+//.decl clear_sum(table:number, turn: number, summation:number)
+//clear_sum(t,i,s):- clear(w,t,i),s = sum z : {tables(t,r,c,w)}.
+
+.decl clear_win_all(w:number)
+clear_win_all(w):-clear(w,t,i),win_turn(i,t,_).
+
+.decl clear_win_sum(x:number)
+clear_win_sum(n) :- n = sum y : clear_win_all(y).
+
+//.printsize clear_win_all
+//.decl _sum(turn:number, table:number, result:number)
+
+.decl answer(product:number)
+answer(p) :- clear_win_sum(cws),win_turn(_,_,last_shout),
+	p = cws*last_shout.
+
+// .output win_turn, clear_win_all, clear_win_sum
+.output answer

@@ -1,0 +1,27 @@
+.decl commands(i:number,op:symbol,param:number)
+.input commands
+
+.decl rule(i:number,horizontal:number,vertical:number)
+rule(i,h,v):-commands(i,op,p),op="forward",v=0,h=p.
+rule(i,h,v):-commands(i,op,p),op="down",h=0,v=p.
+rule(i,h,v):-commands(i,op,p),op="up",h=0,v=-p.
+
+/*
+.decl path(i:number,pos:number,depth:number)
+path(0,0,0).
+path(i+1,pos,depth):-path(i,x,y),rule(i,down,forward),pos=x+forward,depth=y+down.
+
+.output path
+
+part1
+*/
+
+.decl rule(i:number,horizontal:number,vertical:number,aiming:number)
+rule(i,h,v,a):-commands(i,op,p),op="down",h=0,v=0,a=p.
+rule(i,h,v,a):-commands(i,op,p),op="up",h=0,v=0,a=-p.
+rule(i,h,v,a):-commands(i,op,p),op="forward",h=p,a=0,v=p.
+
+.decl path(i:number,pos:number,depth:number,aim:number)
+path(0,0,0,0).
+path(i+1,pos,depth,aim):-path(i,x,y,a),rule(i,down,forward,shift),
+	pos=x+forward,depth=y+a*down,aim=a+shift.
