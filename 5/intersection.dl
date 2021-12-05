@@ -9,7 +9,7 @@
 	y2:number
 ]
 
-.decl wvent(line:Line) // обернём в тип для удобства
+.decl wvent(line:Line) // обернём (wrap) в тип для удобства
 wvent([x1,y1,x2,y2]) :- vent(x1,y1,x2,y2).
 
 .decl horizontal(line:Line)
@@ -51,71 +51,70 @@ cover([x1,y1,x2,y2],[x,y]) :- horizontal([x1,y1,x2,y2]), y = y1,
 	x2 < x1,
 	xx != x1,
 	cover([x1,y1,x2,y2],[xx,y]),
-	x=xx+1.
+	x = xx + 1.
 
 // слева направо
 cover([x1,y1,x2,y2],[x,y]) :- horizontal([x1,y1,x2,y2]), y = y1, 
 	x1 < x2,
 	xx != x2,
 	cover([x1,y1,x2,y2],[xx,y]),
-	x=xx+1.
+	x = xx + 1.
 
 // сверху вниз
 cover([x1,y1,x2,y2],[x,y]) :- vertical([x1,y1,x2,y2]), x = x1, 
 	y2 < y1,
 	yy != y1,
 	cover([x1,y1,x2,y2],[x,yy]),
-	y=yy+1.
+	y = yy + 1.
 
 // снизу вверх
 cover([x1,y1,x2,y2],[x,y]) :- vertical([x1,y1,x2,y2]), x = x1, 
 	y1 < y2,
 	yy != y2,
 	cover([x1,y1,x2,y2],[x,yy]),
-	y=yy+1.
+	y= yy + 1.
 
 // p2
 // снизу вверх и слева направо
 cover([x1,y1,x2,y2],[x,y]) :- diagonal([x1,y1,x2,y2]), cover([x1,y1,x2,y2],[xx,yy]),
 	y1 < y2, y <= y2,
 	x1 < x2, x <= x2,
-	x=xx+1,
-	y=yy+1.
+	x = xx + 1,
+	y = yy + 1.
 
 // снизу вверх и справа налево
 cover([x1,y1,x2,y2],[x,y]) :- diagonal([x1,y1,x2,y2]), cover([x1,y1,x2,y2],[xx,yy]),
 	y1 < y2, y <= y2,
 	x2 < x1, x <= x1,
-	x=xx-1,
-	y=yy+1.
+	x = xx - 1,
+	y = yy + 1.
 
 // сверху вниз и слева направо
 cover([x1,y1,x2,y2],[x,y]) :- diagonal([x1,y1,x2,y2]), cover([x1,y1,x2,y2],[xx,yy]),
 	y2 < y1, y <= y1,
 	x1 < x2, x <= x2,
-	x=xx+1,
-	y=yy-1.
+	x = xx + 1,
+	y = yy - 1.
 
 // сверху вниз и справа налево
 cover([x1,y1,x2,y2],[x,y]) :- diagonal([x1,y1,x2,y2]), cover([x1,y1,x2,y2],[xx,yy]),
 	y2 < y1, y >= y2, // need to bound.
 	x2 < x1, x <= x1,
-	x=xx-1,
-	y=yy-1.
-
+	x = xx - 1,
+	y = yy - 1.
 
 .decl non_uniq(p:Point)
-non_uniq(p):-cover(a,p),cover(b,p),a!=b.
+non_uniq(p) :- cover(a,p), cover(b,p), a!=b.
 
 .printsize non_uniq
 
 // alternative approach 
 
-//.decl cover_count(p:Point, times:number)
-//cover_count(p,count : {cover(_,p)}) :- cover(_,p).
+.decl cover_count(p:Point, times:number)
+cover_count(p,count : {cover(_,p)}) :- cover(_,p).
 
-//.decl multicover(x:number,y:number,p:Point,times:number)
-//multicover(x,y,[x,y],t):-cover_count([x,y],t),t>1.
+.decl multicover(x:number,y:number,p:Point,times:number)
+multicover(x,y,[x,y],t):-cover_count([x,y],t),t>1.
 
-//.printsize multicover
+.printsize multicover
 
