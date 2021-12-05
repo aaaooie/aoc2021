@@ -12,8 +12,8 @@
 .printsize announcement, tables
 
 .decl marked (i:number, t:number, r:number, c:number) // число отмечено в таблице, если...
-marked(i,t,r,c):- announcement(i,N), tables(t,r,c,N). // объявлено в этот ход
-marked(i,t,r,c):- marked(i-1,t,r,c),announcement(i,_). // ИЛИ было объявлено в какой-то из предыдущих ходов
+marked(i,t,r,c) :- announcement(i,N), tables(t,r,c,N). // объявлено в этот ход
+marked(i,t,r,c) :- marked(i-1,t,r,c), announcement(i,_). // ИЛИ было объявлено в какой-то из предыдущих ходов
 
 //.decl sample_turn( t:number, r:number, c:number )
 //first_turn(t,r,c):-marked(8,t,r,c).
@@ -43,7 +43,7 @@ win(i,t) :-  condition_col(i,t,_).
 
 // на каком ходу какой стол впервые выигрывает
 .decl win_first(turn:number, table:number)
-win_first(i,t):-win(i,t),!win(i-1,t).
+win_first(i,t) :- win(i,t), !win(i-1,t).
 
 //.output win_first
 
@@ -51,8 +51,8 @@ win_first(i,t):-win(i,t),!win(i-1,t).
 // Мы ожидаем, что `min` сожмёт все ходы, на которых происходит выигрыш до одного — минимального.
 // При этом может одновременно выиграть несколько столов
 .decl win_turn( turn:number, table:number, shout: number) 
-//win_turn(i,t,v):- i = min z : win(z,t),announcement(i,v).  // PART 1
-win_turn(i,t,v):- i = max z : win_first(z,t),announcement(i,v).
+win_turn(i,t,v):- i = min z : win(z,t), announcement(i,v).  // PART 1
+//win_turn(i,t,v):- i = max z : win_first(z,t),announcement(i,v).
 
 
 .output win_turn
